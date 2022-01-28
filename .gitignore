@@ -1,0 +1,8 @@
+.idea
+data/*
+results/Reddit2/*
+results/ogbn-arxiv/*
+results/Flickr/*
+results/PPI/*
+results/ogbn-products/*
+results/rho_test/*
