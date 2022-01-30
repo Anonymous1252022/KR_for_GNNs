@@ -30,7 +30,7 @@ better one in the future.
 - torch-geometric==1.7.2
 - ogb==1.3.2
 
-## Steps for the reproduction of the experiments:
+## Steps to reproduce experiments:
 - Create the empty directories inside the `Recoverability` repo according to the following structure:
 ```text
 Recoverability/
@@ -101,7 +101,7 @@ python extract_features.py
 --seed=0
 --embedding_type=<embedding type>
 --num_embedding_layers=<depth>
---dataset=./data/PPI/ref.pt
+--dataset=./data/<dataset>/ref.pt
 --checkpoint_file_path=./data/<dataset>/<embedding type>_depth_<depth>_weights.pth.tar
 --neighbor_sampler_size=-1
 ```
