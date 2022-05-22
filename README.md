@@ -11,7 +11,7 @@ This repo contains the code to reproduce experiments from the paper:
 The main idea behind the recoverability is visualized in the following figure, 
 where we can see how recoverability loss rho changes when the input graph is sparsified.
 When the graph is sparser the recoverability loss is higher. We can use this effect to 
-understand why some sparsification methods are better the others, and potentially propose
+understand why some sparsification methods are better than others, and potentially propose
 better one in the future.
 ![](images/gs_vs_rho.png?raw=true)
 
@@ -41,7 +41,9 @@ Recoverability/
       ├── Flickr/
       ├── PPI/
       ├── ogbn-products/
-      └── rho_test/
+      ├── rho_test/
+      └── reg_test/
+      
 ```
 
 - Run `test_rho.py` script to test the effectiveness of the recoverability loss metric.
@@ -108,7 +110,7 @@ python extract_features.py
 where the `<dataset>` is one of the following `Reddit2, ogbn-arxiv, Flickr, PPI, ogbn-products`,
 the `<depth>` is one of the following `1,2,3,4,5,6,7,8,9`.
 and the `<embedding type>` is one of the following `SAGEConv, GATv2Conv`.
-The script saves .pt files inside `./data/<dataset>` with the following name template `trained_<embedding type>_features_layer_<depth>.pt`.
+The script saves `.pt` files inside `./data/<dataset>` with the following name template `trained_<embedding type>_features_layer_<depth>.pt`.
 
 - To compute rho for all embeddings use `compute_rho.py` script.
 ```bash
@@ -120,7 +122,8 @@ python compute_rho.py
 ```
 where the `<dataset>` is one of the following `Reddit2, ogbn-arxiv, Flickr, PPI, ogbn-products`.
 For `PPI` dataset use `--lambda_=0.5`, for `ogbn-products` use `--lambda_=0.1` and for the rest datasets use `--lambda_=1.0`.
-The results are saved in .csv file `rho.csv`.
+The results are saved in `.csv` file `rho.csv`.
 
-
+- For recoverability regularization experiments refer to
+[regularization/README.md](regularization/README.md).
 
