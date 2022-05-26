@@ -1,0 +1,3 @@
+name: "graphsage"
+params: { }
+num_neighbors: [ 5, 10, 15 ]

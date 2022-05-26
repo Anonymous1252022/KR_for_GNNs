@@ -1,0 +1,8 @@
+use_wandb: false
+upload_artifacts: false
+wandb_project_name: gnn_reconstruction_ablation
+exp_name: None
+data_dir: data
+output_dir: gnn_reconstruction_output
+device: None
+num_workers: 8

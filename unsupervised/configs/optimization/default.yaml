@@ -1,0 +1,11 @@
+epochs: 10000
+early_stopping_tolerance: 20
+dropout_rate: 0
+
+optimizer:
+  name: AdamW
+  initial_lr: 1e-3
+  weight_decay: 5e-4
+  lr_sched_patience: 2
+  lr_sched_factor: .5
+  lr_sched_minimal_lr: 1e-5

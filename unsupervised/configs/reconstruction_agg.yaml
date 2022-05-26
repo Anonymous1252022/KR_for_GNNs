@@ -1,0 +1,11 @@
+defaults:
+  - default
+  - _self_
+
+model:
+  use_bn: false
+
+training:
+  use_self_in_loss: false
+  max_edges_for_loss: 2048
+  add_regularization: false

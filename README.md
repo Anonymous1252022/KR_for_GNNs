@@ -127,3 +127,6 @@ The results are saved in `.csv` file `rho.csv`.
 - For recoverability regularization experiments refer to
 [regularization/README.md](regularization/README.md).
 
+- For unsupervised experiments refer to
+[unsupervised/README.md](unsupervised/README.md).
+

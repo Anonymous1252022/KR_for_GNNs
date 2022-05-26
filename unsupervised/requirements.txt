@@ -1,0 +1,7 @@
+torch==1.11.0
+torch-geometric
+pytorch-lightning
+wandb
+faiss-gpu
+hydra-core
+ogb

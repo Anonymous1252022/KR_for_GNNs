@@ -1,0 +1,5 @@
+multi_label_ds: false
+normalize_features: true
+remove_self_loops: false
+use_saint: true
+pre_calculate_embeddings: true

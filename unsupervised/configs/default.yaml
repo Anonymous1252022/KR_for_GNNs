@@ -1,0 +1,18 @@
+defaults:
+  - enviroment: default
+  - optimization: default
+  - dataset: None
+  - layer: None
+  - _self_
+
+model:
+  depth: None
+  use_bn: true
+  activation: elu
+  hidden_dim: 32
+
+training:
+  batch_size: 1024
+  classifier_batch_size: 32
+  num_neighbours: -1
+  max_samples_for_evaluation: 32

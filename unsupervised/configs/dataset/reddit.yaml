@@ -1,0 +1,7 @@
+defaults:
+  - default
+  - _self_
+name: reddit
+params: {}
+use_saint: false # Need sage
+pre_calculate_embeddings: false

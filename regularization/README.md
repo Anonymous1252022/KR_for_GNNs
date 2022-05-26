@@ -1,3 +1,5 @@
+## Recoverability Regularization
+
 For training GNN model with recoverability regularization, use `train_gnn_reg.py` script.
 
 - For `Reddit2` dataset run the following command:
