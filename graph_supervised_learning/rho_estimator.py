@@ -1,7 +1,7 @@
 from typing import List, Type, Tuple
 import pandas as pd
 import torch.nn
-from regularization.rho import compute_rho
+from graph_supervised_learning.rho import compute_rho
 
 class RhoEstimator:
     """
@@ -19,8 +19,8 @@ class RhoEstimator:
         self._last_layer = self._all_modules[-1]
         self._iter = 0
         self._y = None
+        self._mask = None # we should select only training node representations
         self._rho = None
-        self._batch_size = None
         self._rho_reg = rho_reg
         self._lambda = lambda_
         self._task_type=task_type
@@ -28,10 +28,10 @@ class RhoEstimator:
         for curr_module in self._all_modules:
             def forward_hook(module, input, output):
                 if module.training == True:
-                    self._rho_list.append(compute_rho(output[:self._batch_size], self._y, lambda_=self._lambda))
+                    self._rho_list.append(compute_rho(output[self._mask], self._y[self._mask], lambda_=self._lambda))
 
                     if module == self._last_layer:
-                        self._rho = torch.stack(self._rho_list)[:-1].sum()
+                        self._rho = torch.stack(self._rho_list)[:-1].sum() # discard last layer
                         rho_list = [rho.item() for rho in self._rho_list]
                         data = [self._iter] + rho_list
                         if self._path is not None:
@@ -58,16 +58,20 @@ class RhoEstimator:
                 ans += RhoEstimator._get_all_modules(curr_children, layers_type)
             return ans
 
-    def set_y(self, y):
+    def set_y(self, y:torch.Tensor):
         if self._task_type == 's':
             self._y = torch.nn.functional.one_hot(y.flatten()).type(torch.float32)
             self._y = self._y[:, self._y.sum(0) != 0]  # prevents nans in back propagation
         else: # (m)
             self._y = y.type(torch.float32)
 
-    def set_batch_size(self, batch_size):
-        self._batch_size = batch_size
+    def set_mask(self, mask:torch.Tensor):
+        self._mask = mask
 
-    def get_rho(self):
-        return self._rho * self._rho_reg
+    @property
+    def rho_reg(self):
+        return self._rho_reg
 
+    @property
+    def rho(self):
+        return self._rho

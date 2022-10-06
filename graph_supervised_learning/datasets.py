@@ -1,18 +1,23 @@
 import os
+import argparse
 import torch
 from ogb.nodeproppred import PygNodePropPredDataset
-from torch_geometric.datasets import Reddit2, PPI, Flickr
+from torch_geometric.datasets import Reddit, Reddit2, PPI
 from torch_geometric.data.data import Data
-from dataset import Dataset
 import numpy as np
+from typing import List
 
-def load_data(name:str) -> Data:
+def load_data(name:str, path:str) -> Data:
     '''
-    :param name: {Reddit2, ogbn-arxiv, Flickr, PPI, ogbn-products}
+    :param name: {Reddit, Reddit2, ogbn-arxiv, PPI, ogbn-products}
     :return: Data
     '''
-    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
-    if name == 'Reddit2':
+    if name == 'Reddit':
+        dataset = Reddit(root=os.path.join(path, 'Reddit'))
+        data = dataset[0]
+        data.x = data.x[:, 1:] # remove first feature, it has different scale
+        return data
+    elif name == 'Reddit2':
         dataset = Reddit2(root=os.path.join(path, 'Reddit2'))
         data = dataset[0]
         data.x = data.x[:, 2:] # remove first two features, they have different scale
@@ -39,11 +44,17 @@ def load_data(name:str) -> Data:
         new_edge_index = torch.cat((new_edges, new_edges[[1, 0]]), dim=1)
         data.edge_index = new_edge_index
         return data
-    elif name == 'Flickr':
-        dataset = Flickr(root=os.path.join(path, 'Flickr'))
+    elif name == 'ogbn-products':
+        dataset = PygNodePropPredDataset(name=name, root=os.path.join(path, name))
         data = dataset[0]
-        x = data.x
-        data.x = (x - x.mean(0)) / x.std(0)
+        idx_split = dataset.get_idx_split()
+        data.train_mask = torch.zeros(data.num_nodes, dtype=torch.bool)
+        data.train_mask[idx_split['train']] = 1
+        data.val_mask = torch.zeros(data.num_nodes, dtype=torch.bool)
+        data.val_mask[idx_split['valid']] = 1
+        data.test_mask = torch.zeros(data.num_nodes, dtype=torch.bool)
+        data.test_mask[idx_split['test']] = 1
+        data.y = data.y.flatten()
         return data
     elif name == 'PPI':
         root = os.path.join(path, 'PPI')
@@ -69,33 +80,56 @@ def load_data(name:str) -> Data:
         data.val_mask = val_mask
         data.test_mask = test_mask
         return data
-    elif name == 'ogbn-products':
-        dataset = PygNodePropPredDataset(name=name, root=os.path.join(path, name))
-        data = dataset[0]
-        idx_split = dataset.get_idx_split()
-        data.train_mask = torch.zeros(data.num_nodes, dtype=torch.bool)
-        data.train_mask[idx_split['train']] = 1
-        data.val_mask = torch.zeros(data.num_nodes, dtype=torch.bool)
-        data.val_mask[idx_split['valid']] = 1
-        data.test_mask = torch.zeros(data.num_nodes, dtype=torch.bool)
-        data.test_mask[idx_split['test']] = 1
-        data.y = data.y.flatten()
-        return data
     else:
         raise ValueError('Incorrect dataset: ' + name)
 
+class Dataset:
+    def __init__(self, data_list:List[Data], num_features:int, num_classes:int, task_type:str):
+        self.__list = data_list
+        self.__num_features = num_features
+        self.__num_classes = num_classes
+        assert task_type in ['s', 'm'], "task_type should be one of {'s', 'm'}"
+        self.__task_type = task_type # {s or m}
+
+    def __len__(self) -> int:
+        return len(self.__list)
+
+    def __getitem__(self, idx:int) -> Data:
+        return self.__list[idx]
+
+    @property
+    def num_features(self) -> int:
+        return self.__num_features
+
+    @property
+    def num_node_features(self) -> int:
+        return self.__num_features
+
+    @property
+    def num_classes(self) -> int:
+        return self.__num_classes
+
+    @property
+    def task_type(self) -> str:
+        return self.__task_type
+
+
 if __name__ == "__main__":
-    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
+    parser = argparse.ArgumentParser(description='Datasets')
+    parser.add_argument('--output', default=None, type=str, help='The path to directory where datasets will be sotred.')
+    args = parser.parse_args()
 
-    for name in ['Reddit2', 'ogbn-arxiv', 'Flickr', 'ogbn-products']:
-        data = load_data(name)
-        dataset = Dataset([data], num_features=data.x.shape[1], num_classes=data.y.max().item() + 1, task_type='s') # (s)
-        torch.save(dataset, os.path.join(path, name, 'ref.pt'))
+    if args.output is not None:
+        for name in ['Reddit', 'Reddit2', 'ogbn-arxiv', 'ogbn-products']:
+            data = load_data(name, args.output)
+            dataset = Dataset([data], num_features=data.x.shape[1], num_classes=data.y.max().item() + 1, task_type='s') # (s)
+            torch.save(dataset, os.path.join(args.output, name, 'ref.pt'))
 
-    for name in ['PPI']:
-        data = load_data(name)
-        dataset = Dataset([data], num_features=data.x.shape[1], num_classes=data.y.shape[1], task_type='m') # (m)
-        torch.save(dataset, os.path.join(path, name, 'ref.pt'))
+        for name in ['PPI']:
+            data = load_data(name, args.output)
+            dataset = Dataset([data], num_features=data.x.shape[1], num_classes=data.y.shape[1], task_type='m') # (m)
+            torch.save(dataset, os.path.join(args.output, name, 'ref.pt'))
+
 
 
 

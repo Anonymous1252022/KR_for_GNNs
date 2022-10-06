@@ -1,4 +1,4 @@
-## Unsupervised Graph Representation Learning
+## Self-Supervised Graph Representation Learning
 ### Overview
 This folder holds the code used to reproduce the results we share in our paper under the node classification self supervision.  
 You can add datasets and layers using the config folders, we encourage you to try different configuration and extend our work.

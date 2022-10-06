@@ -22,10 +22,10 @@ from torch_geometric.transforms import BaseTransform
 import pandas as pd
 
 
-from unsupervised.dataset import get_dataset
+from graph_self_supervised_learning.dataset import get_dataset
 from io import StringIO
 
-from unsupervised.model_reg import ExpModelReg
+from graph_self_supervised_learning.model_reg import ExpModelReg
 
 
 def get_free_gpu():

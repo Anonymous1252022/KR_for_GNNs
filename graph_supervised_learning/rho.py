@@ -24,6 +24,7 @@ class ED(torch.autograd.Function):
         eps = 1e-5
         tmp = tmp + (tmp == 0) * eps # prevent nans
         K_tilde = 1/tmp - I
+        # K_tilde = K_tilde.clamp(-1/eps, 1/eps) # prevent nans
         return U @ (K_tilde.T * (U.T @ U_grad) + torch.diag(lambda_grad)) @ U.T
 
 
@@ -53,9 +54,10 @@ def compute_rho(X:torch.Tensor, Y:torch.Tensor, lambda_:float=1.0) -> float:
     l, U = ED.apply(K)
     P = U @ torch.diag(l.clamp(min=0.0, max=1.0)) @ U.T
     Y_perp = Y - P @ Y
+
     # the last sum is according dim_2 which could be > 1.
-    # rho = ((Y_perp**2).mean(0)**0.5).sum()
-    rho = ((Y_perp ** 2).mean(0) ** 0.5).mean()
+    # rho = ((Y_perp ** 2).mean(0) ** 0.5).mean() # This computation of rho is unstable during backprop of sqrt (**0.5).
+    rho = (Y_perp ** 2).mean() # Stable version.
     return rho
 
 

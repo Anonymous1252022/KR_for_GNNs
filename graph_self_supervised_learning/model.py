@@ -16,8 +16,8 @@ from sklearn.metrics import RocCurveDisplay, auc, roc_auc_score, roc_curve, conf
 
 from torch_geometric.nn import GCNConv, GATConv, GATv2Conv, SAGEConv, GraphConv
 
-from unsupervised.gaussian_kernel import GaussianKernel
-from unsupervised.knn import KNNFaiss
+from graph_self_supervised_learning.gaussian_kernel import GaussianKernel
+from graph_self_supervised_learning.knn import KNNFaiss
 
 
 class EModelPhase(enum.Enum):

@@ -23,8 +23,8 @@ from torch_geometric.transforms import BaseTransform
 import pandas as pd
 from tqdm import tqdm
 
-from unsupervised.dataset import get_dataset
-from unsupervised.model import ExpModel, EModelPhase
+from graph_self_supervised_learning.dataset import get_dataset
+from graph_self_supervised_learning.model import ExpModel, EModelPhase
 from io import StringIO
 
 

@@ -21,8 +21,10 @@ plt.rcParams['grid.color'] = color
 plt.rcParams['grid.linestyle'] = '--'
 plt.rcParams['axes.grid'] = True
 
-
-from rho import compute_rho
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+from synthetic_data.rho import compute_rho
+del sys.path[0]
 
 
 def test_1():
@@ -78,7 +80,7 @@ def test_2():
     plt.legend()
     plt.xlabel(r'$\alpha$', fontsize=30)
     plt.ylabel(r'$\rho^*(Y|X)$', fontsize=30)
-    plt.savefig(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'results', 'rho_test', 'test_2.png'))
+    plt.savefig(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'results', 'rho_test', 'test_2.png'))
 
 
 if __name__ == '__main__':
