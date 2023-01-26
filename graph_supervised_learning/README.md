@@ -1,9 +1,9 @@
 ## Recoverabily in a Supervised Setting
 
 ### Overview
-This folder contains the code which utilizes recoverability for better aggregation of information 
+This directory contains the code which utilizes KR for better aggregation of information 
 from neighboring nodes in GNN layers during training. The code contains dataset generation `datasets.py`,
-recoverability loss estimator `rho.py` and `rho_estimator.py`, gnn training `train_gnn.py`, and the list of bash 
+KR loss estimator `rho.py` and `rho_estimator.py`, gnn training `train_gnn.py`, and the list of bash 
 scripts with chosen hyperparameters located at `./scripts` directory.
 
 For more details on the training configuration check out our paper.
@@ -13,9 +13,9 @@ For more details on the training configuration check out our paper.
 
 
 ### Steps to reproduce experiments:
-- Create the empty directories outside the `Recoverability` repo according to the following structure:
+- Create the empty directories outside the `KR_for_GNNs` repo according to the following structure:
 ```text
-Recoverability/../
+KR_for_GNNs/../
  ├── data/
  └── results/
       ├── Reddit/
@@ -31,4 +31,4 @@ python ./datasets.py \
 --output=../../data
 ```
 
-- Run scripts in `./scripts` directory. Each script for different dataset.
+- Run scripts in `./scripts` directory. Each script for a different dataset.
